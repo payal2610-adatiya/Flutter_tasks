@@ -25,8 +25,7 @@ class AudioPlayerScreen extends StatefulWidget {
 class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
-  String _statusText = "Music stopped"; // Initial status text
-
+  String _statusText = "Music stopped"; 
   @override
   void initState() {
     super.initState();
