@@ -80,7 +80,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   },
                 ),
                 Text('Addition'),
-                Radio<String>(
+                Radio(
                   value: 'Subtraction',
                   groupValue: _operation,
                   onChanged: (value) {
@@ -105,7 +105,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   },
                 ),
                 Text('Multiplication'),
-                Radio<String>(
+                Radio(
                   value: 'Division',
                   groupValue: _operation,
                   onChanged: (value) {
