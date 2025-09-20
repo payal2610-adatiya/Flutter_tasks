@@ -1,0 +1,82 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() {
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyApp()));
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Future<List<dynamic>> getdata() async {
+    var url = Uri.parse("https://simplifiedcoding.net/demos/marvel/");
+    var res = await http.get(url);
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      throw Exception("Failed to load data");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Marvel Superheroes")),
+      body: FutureBuilder<List<dynamic>>(
+        future: getdata(),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (snapshot.hasError) {
+            return const Center(child: Text("Network error!"));
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasData) {
+            return MyModel(list: snapshot.data!);
+          }
+          return const Center(child: Text("No data found"));
+        },
+      ),
+    );
+  }
+}
+
+class MyModel extends StatelessWidget {
+  final List list;
+  const MyModel({required this.list, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        var hero = list[index];
+        return Card(
+          margin: const EdgeInsets.all(10),
+          child: ListTile(
+            leading: Image.network(hero["imageurl"], width: 60, height: 60, fit: BoxFit.cover),
+            title: Text(hero["name"], style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Real Name: ${hero["realname"]}"),
+                Text("Team: ${hero["team"]}"),
+                Text("First Appearance: ${hero["firstappearance"]}"),
+                Text("Created By: ${hero["createdby"]}"),
+                Text("Publisher: ${hero["publisher"]}"),
+              ],
+            ),
+            isThreeLine: true,
+          ),
+        );
+      },
+    );
+  }
+}
