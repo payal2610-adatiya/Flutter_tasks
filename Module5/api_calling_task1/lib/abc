@@ -1,0 +1,78 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: HeroesScreen(),
+  ));
+}
+
+class HeroesScreen extends StatefulWidget {
+  const HeroesScreen({super.key});
+
+  @override
+  State<HeroesScreen> createState() => _HeroesScreenState();
+}
+
+class _HeroesScreenState extends State<HeroesScreen> {
+  List<dynamic> heroes = [];
+  bool isLoading = true;
+
+  // Fetch heroes from API
+  Future<void> fetchHeroes() async {
+    final url = Uri.parse("https://www.simplifiedcoding.net/demos/view-flipper/heroes.php");
+    // 👆 Replace with your API endpoint returning the JSON you showed
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+
+        setState(() {
+          heroes = jsonData['heroes']; // Access the "heroes" array
+          isLoading = false;
+        });
+      } else {
+        throw Exception("Failed to load heroes");
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print("Error: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchHeroes();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Heroes List")),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: heroes.length,
+              itemBuilder: (context, index) {
+                final hero = heroes[index];
+                return Card(
+                  margin: const EdgeInsets.all(8),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(hero['imageurl']),
+                    ),
+                    title: Text(hero['name']),
+                  ),
+                );
+              },
+            ),
+    );
+  }
+}
