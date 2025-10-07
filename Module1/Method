@@ -1,0 +1,7 @@
+Get.to()	Navigate to next page	Get.to(NextPage());
+Get.off()	Navigate & remove current page	Get.off(NextPage());
+Get.offAll()	Navigate & remove all previous pages	Get.offAll(HomePage());
+Get.back()	Go back to previous screen	Get.back();
+Get.toNamed()	Navigate using route name	Get.toNamed('/home');
+Get.offNamed()	Navigate using route name and remove previous	Get.offNamed('/login');
+Get.offAllNamed()	Remove all and go to a named route	Get.offAllNamed('/main')
